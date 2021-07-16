@@ -1,0 +1,27 @@
+body {
+    background-color: 	
+    #ffffff;
+    transition: all 250ms ease;
+}
+
+h1 {text-align: center;}
+.center 
+{
+    margin: 0;
+    position: absolute;
+    left: 50%;
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+form {display: flex; }
+input[type=text] {flex-grow: 1; }
+
+.dark {
+    background: rgb(27, 27, 27);
+    color: white;
+}
+
+.web {
+    background-color: rgb(53, 248, 141);
+    color : black;
+}

@@ -14,15 +14,6 @@ Storage.prototype.getObj = function(key) {
   return JSON.parse(this.getItem(key));
 }
 
-//Opening the popup in a new tab using webBtn
-
-var webButton = document.getElementById("webBtn");
-webButton.onclick = function openWeb()
-{
-  chrome.tabs.create({url: 'organizer.html'});
-}
-
-
 //Saving a file in order to permanently store url info on hard drive
 var saveButton = document.getElementById("saveBtn"); 
 saveButton.onclick = function saveToFile() 

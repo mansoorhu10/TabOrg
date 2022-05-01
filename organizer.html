@@ -1,30 +1,40 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Main Page</title>
+        <title>TabOrg | Tabs</title>
         <link rel="stylesheet" type="text/css" href="style.css">
 
     </head>
     <body>
-        <h1>Welcome to TabOrg!</h1>
-        <hr>
-        <h3>Try out some of our features:</h3>
-        <input placeholder="Enter in URLs" type="text" id = "userInput"/>
         
-        <form>
-            <input placeholder="Tab Group Name" type="text" id = "grpName"/>
-            <button id="saveBtn">Save URLs into group</button>
-        </form>
-        
-        <input type="file"/>
-        
-        <p>
-            <button id = "deleteBtn">Delete Duplicates</button>
-        </p>
-        
-        <p>
-            <button id = "darkBtn">Light/Dark Mode</button>
-        </p>
+        <nav class="sidenav">
+            <ul>
+                <li><a href="#">TabOrg</a></li>
+                <hr>
+                <li><a href="#">Your Tabs</a></li>
+                <li><a href="#">Settings</a></li>
+            </ul>
+        </nav>
+
+        <div class="main">
+            <h1>Your Tabs</h1>
+            <input placeholder="Enter in URLs" type="text" id = "userInput"/>
+            
+            <form>
+                <input placeholder="Tab Group Name" type="text" id = "grpName"/>
+                <button id="saveBtn">Save URLs into group</button>
+            </form>
+            
+            <input type="file"/>
+            
+            <p>
+                <button id = "deleteBtn">Delete Duplicates</button>
+            </p>
+            
+            <p>
+                <button id = "darkBtn">Light/Dark Mode</button>
+            </p>
+        </div>
 
         <script type="text/javascript" src="organizer.js"></script>
         <script src = "FileSaver.js"></script>

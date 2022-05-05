@@ -1,0 +1,21 @@
+{
+"name": "TabOrg",
+"version": "1.0",
+"description": "Tab Organizer Chrome Extension",
+"browser_action": {
+    "default_title": "Organize your Tabs!",
+    "default_popup": "popup.html"
+},
+"permissions": [
+    "activeTab",
+    "tabs",
+    "<all_urls>",
+    "storage"
+],
+"background": {
+    "scripts": ["background.js"],
+    "persistent": false
+},
+"manifest_version": 2
+
+}

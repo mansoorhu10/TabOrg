@@ -1,7 +1,14 @@
+html {
+    min-width: 600px;
+    min-height: 800px;
+    max-height: 800px;
+}
+
 body {
     background-color: 	
     #ffffff;
     transition: all 250ms ease;
+    font-family: 'IBM Sans-Plex Hebrew', sans-serif;
 }
 
 h1 
@@ -14,7 +21,7 @@ h1
 h2 
 {
     text-align: left;
-    color:#0A3200;
+    color:rgb(27, 27, 27);
 }
 
 #root {
@@ -23,8 +30,12 @@ h2
     font-size: 14px;
 }
 
-.dark h1, .dark h2 {
+.dark h1 {
     color: #bdffbd;
+}
+
+.dark h2 {
+    color: white
 }
 
 .center 
@@ -62,11 +73,13 @@ nav.sidenav {
     position: fixed;
     z-index: 1;
     top: 0;
-    left: 50;
+    left: 0;
     overflow-x: hidden;
     padding-top: 20px;
     box-shadow:rgb(10 50 0/ 20%) 4px 0px 8px 0px;
-    padding-right: 10px;   
+    padding-right: 10px;
+    margin: 0;
+    padding: 0;   
 }
 
 .dark nav.sidenav {
@@ -75,14 +88,17 @@ nav.sidenav {
 
 nav.sidenav ul {
     list-style-type: none;
+    margin-left: 0;
+    padding: 0;
 }
+
 nav.sidenav li {
     display: block;
 }
 
 nav.sidenav li a {
     display: block;
-    width: 125px;
+    width: 170px;
     color: #0A3200;
     text-align: left;
     padding: 15px;

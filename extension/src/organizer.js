@@ -4,6 +4,7 @@ const reader = new FileReader();
 let urlArr = [];
 let createURLs = [];
 var groupName = "";
+var tempMode = {};
 
 //functions created in order to simplify the process of saving arrays into localStorage of chrome browser
 
@@ -45,7 +46,7 @@ urlInput.addEventListener('change', function() {
 
 }, false);
 
-
+/*
 //Selecting a file on the local hard drive in order to get url info
 var input = document.querySelector('input[type = "file"]'); 
 input.addEventListener('change', function() {
@@ -70,7 +71,7 @@ input.addEventListener('change', function() {
     chrome.windows.create({'url': createURLs});
 
     //var windowArr = chrome.windows.getAll(windowId);
-    /*
+    
 
     if (confirm("A Tab Group will be created in the following window."))
     {
@@ -94,12 +95,31 @@ input.addEventListener('change', function() {
     chrome.tabs.group({'tabIds': newGroup});
     console.log("Attempted grouping");
     
-    }); */
+    }); 
   }
   reader.readAsText(input.files[0]);
 
 }, false);
 
+*/
+
+/*
+//Creating a function that gets all of the tabs with URL info in the current window and displays it on the page
+var currentURL = "";
+
+window.onload = function() {
+  let tabs = chrome.tabs.query({windowId: chrome.windows.WINDOW_ID_CURRENT}, function(tabs)
+  {
+    for (let i = 0; i < tabs.length; i++)
+    {
+      currentURL += tabs[i].url + " ";
+    }
+    document.getElementById("tabsToAdd").innerHTML = currentURL;
+  });
+
+}
+
+*/
 
 //Automatically deleting all duplicate versions of tabs and keeping the originals in the current or selected window to allow users to save CPU usage and unnecessary open tabs
 let dupeId = [];
@@ -126,27 +146,36 @@ deleteButton.onclick = function deleteDupes()
   }); 
 }
 
-
-//Setting the background to dark/light mode with a button
-if (localStorage.getItem("mode") == "dark") //created in order to save the user's setting on light/dark mode, regardless of exiting the extension
-{
-  document.body.classList.toggle("dark");
-}
+chrome.storage.sync.get(['mode'], function(tempMode) {
+  console.log("'mode' is set to " + tempMode['mode']);
+  if (tempMode['mode'] == 'dark')
+  {
+    document.body.classList.toggle("dark");
+  }
+});
 
 var darkButton = document.getElementById("darkBtn"); 
 darkButton.onclick = function setDarkMode()
 {
   document.body.classList.toggle("dark");
 
-  if (localStorage.getItem("mode") == "light")
-  {
-    localStorage.setItem("mode", "dark");
-    console.log("mode is set to dark");
-  }
-  else if (localStorage.getItem("mode") == "dark")
-  {
-    localStorage.setItem("mode", "light");
-    console.log("mode is set to light");
-  }
+  chrome.storage.sync.get(['mode'], function(tempMode) {
+    console.log("'mode' is currently set to " + tempMode['mode']);
+    if (tempMode['mode'] == "light")
+    {
+      chrome.storage.sync.set({'mode': 'dark'}, function() {
+        console.log("'mode' is updated to 'dark'");
+      });
+    }
+    else if (tempMode['mode'] == "dark")
+    {
+      chrome.storage.sync.set({'mode': 'light'}, function() {
+        console.log("'mode' is updated to 'light'");
+      });
+    }
+    
+
+  });
 
 }
+

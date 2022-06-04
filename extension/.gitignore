@@ -1,9 +1,0 @@
-# deps
-node_modules
-
-# ide
-.vscode
-.idea
-
-# platform specific
-.DS_Store

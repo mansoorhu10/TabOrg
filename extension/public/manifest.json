@@ -1,0 +1,32 @@
+{
+"name": "TabOrg",
+"version": "2.0",
+"description": "Tab Organizer Chrome Extension",
+"icons": {
+    "16": "icons/TabOrg Logo - 16.png",
+    "48": "icons/TabOrg Logo - 48.png",
+    "128": "icons/TabOrg Logo - 128.png"
+},
+"action": {
+    "default_title": "Organize your Tabs!",
+    "default_popup": "index.html"
+},
+"permissions": [
+    "activeTab",
+    "tabs",
+    "storage",
+    "unlimitedStorage"
+],
+"host_permissions": [
+    "<all_urls>"
+],
+"manifest_version": 3,
+"minimum_chrome_version": "95",
+"background": {
+    "service_worker": "background.js"
+},
+"content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+}
+
+}

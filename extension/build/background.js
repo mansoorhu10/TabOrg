@@ -1,13 +1,24 @@
+/*global chrome*/
 //background script
 console.log("background running");
 
-chrome.storage.sync.set({'urls': []}, function() {
-  console.log("'urls' is set to " + "'[]'");
+chrome.storage.sync.set({'currentURL': []}, function() {
+  console.log("'currentURL' is set to ");
+  console.log([]);
 });
 
 chrome.storage.sync.set({'mode': 'light'}, function() {
   console.log("'mode' is set to " + "'light'");
 });
+
+chrome.storage.sync.set({'names': [], function() {
+  console.log("'names' is set to '[]'");
+}});
+
+chrome.storage.sync.set({'icons': [], function() {
+  console.log("'icons' is set to '[]'")
+}})
+
 
 /*
 //Creating a function that gets all of the tabs with URL info in the current window and displays it on the page
@@ -28,4 +39,5 @@ window.onload = function() {
 chrome.storage.sync.set({'currentURL': currentURL}, function() {
   console.log("'currentURL is set to " + currentURL);
 });
+
 */

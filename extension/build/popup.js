@@ -7,6 +7,89 @@ var groupName = "";
 var tempMode = {};
 var newIndexURL = "";
 
+var currentURL = "";
+  
+
+//Getting all URLs in the window
+async function getTabs(callback) {
+
+    const urlArr = [];
+    let i = 0;
+
+    chrome.windows.getAll({populate: true}, function(windows) {
+      windows.forEach(function(window) {
+        window.tabs.forEach(function(tab) {
+          urlArr.push(tab.url);
+          i++;
+        });
+      });
+
+      callback(urlArr);
+    });
+}
+
+async function getNames(callback) {
+
+  const nameArr = [];
+  let i = 0;
+
+  chrome.windows.getAll({populate: true}, function(windows) {
+    windows.forEach(function(window) {
+      window.tabs.forEach(function(tab) {
+        nameArr.push(tab.title);
+        i++;
+      });
+    });
+
+    console.log("nameArr is");
+    console.log(nameArr);
+    callback(nameArr);
+  });
+}
+
+async function getIcons(callback) {
+
+  const iconArr = [];
+  let i = 0;
+
+  chrome.windows.getAll({populate: true}, function(windows) {
+    windows.forEach(function(window) {
+      window.tabs.forEach(function(tab) {
+        iconArr.push(tab.favIconUrl);
+        i++;
+      });
+    });
+
+    console.log("iconArr is");
+    console.log(iconArr);
+    callback(iconArr);
+  });
+}
+
+
+let currentTabs = getTabs(currentTabs => {
+  chrome.storage.sync.set({'currentURL': currentTabs}, () => {
+    console.log("currentURL is verified to ");
+    console.log(currentTabs);
+  });
+  
+});
+
+let currentNames = getNames(currentNames => {
+  chrome.storage.sync.set({'names': currentNames}, () => {
+    console.log("'names' is verified to ");
+    console.log(currentNames);
+  })
+})
+
+let currentIcons = getIcons(currentIcons => {
+  chrome.storage.sync.set({'icons': currentIcons}, () => {
+    console.log("'icons' is verified to ");
+    console.log(currentIcons);
+  })
+})
+
+
 //functions created in order to simplify the process of saving arrays into localStorage of chrome browser
 
 Storage.prototype.setObj = function(key, obj) { 
@@ -21,11 +104,11 @@ Storage.prototype.getObj = function(key) {
 var webButton = document.getElementById("webBtn");
 webButton.onclick = function openWeb()
 {
-  newIndexURL = chrome.runtime.getURL("../public/popup.html")
+  newIndexURL = chrome.runtime.getURL("index.html")
   chrome.tabs.create({url: newIndexURL});
 }
 
-
+/*
 //Saving a file in order to permanently store url info on hard drive
 var saveButton = document.getElementById("saveBtn"); 
 saveButton.onclick = function saveToFile() 
@@ -106,12 +189,13 @@ input.addEventListener('change', function() {
     chrome.tabs.group({'tabIds': newGroup});
     console.log("Attempted grouping");
     
-    }); */
+    }); 
   }
   reader.readAsText(input.files[0]);
 
 }, false);
 
+*/
 
 //Automatically deleting all duplicate versions of tabs and keeping the originals in the current or selected window to allow users to save CPU usage and unnecessary open tabs
 let dupeId = [];
@@ -176,3 +260,4 @@ darkButton.onclick = function setDarkMode()
   });
 
 }
+

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import "./style.css";
 
 // custom styling using styled-components!
 const AppContainer = styled.div`
@@ -10,10 +11,14 @@ const AppContainer = styled.div`
 
 const ListComponentContainer = styled.div`
     border-style: solid;
-    border-width: thin;
+    border-width: 0.50px;
     border-radius: 25px;
     height: 34px;
     width: 500px;
+    justify-content: center;
+    &:hover {
+        border-width: 1.50px;
+    }
 `
 
 /*
@@ -101,6 +106,40 @@ function App() {
     const addNewGroupTitle = (groupName) => {
         console.log(groupName);
         setNewGroupTitle(currentGroupTitle => currentGroupTitle.concat(groupName));
+    }
+
+    const [toggled, setToggled] = useState(false);
+    const handleClick = () => {
+        if (toggled === false)
+        {
+            setToggled(true);
+        }
+        else {
+            setToggled(false);
+        }
+        setDarkMode();
+    };
+
+    function setDarkMode()
+    {
+    document.body.classList.toggle("dark");
+
+    chrome.storage.sync.get(['mode'], function(tempMode) {
+        console.log("'mode' is currently set to " + tempMode['mode']);
+        if (tempMode['mode'] == "light")
+        {
+        chrome.storage.sync.set({'mode': 'dark'}, function() {
+            console.log("'mode' is updated to 'dark'");
+        });
+        }
+        else if (tempMode['mode'] == "dark")
+        {
+        chrome.storage.sync.set({'mode': 'light'}, function() {
+            console.log("'mode' is updated to 'light'");
+        });
+        }
+    });
+
     }
 
     const addGroupTabs = (title, url, icon, index) => {
@@ -230,8 +269,10 @@ function App() {
     }
 
     const copyURL = (text) => {
-        navigator.clipboard.writeText(text);
-        alert("Copied the text: " + text);
+        navigator.clipboard.writeText(text).then(function() {
+            alert("Copied the text: " + text);    
+        });
+        
     }
 
     useEffect(() => {
@@ -329,7 +370,7 @@ function App() {
     }
 
     const urlStyle = {
-        width: "385px",
+        width: "365px",
         marginLeft: "45px",
         marginTop: "10px",
         overflow: "hidden",
@@ -360,6 +401,10 @@ function App() {
         position: "absolute",
         top: "0",
         left: "0",
+    }
+
+    const alignCenter = {
+        marginLeft: "45px",
 
     }
 
@@ -389,9 +434,9 @@ function App() {
                 <p style={{marginTop: "-10px"}}>
                     <ListComponentContainer>
                         <div key={item.id} style={textStyle}>
-                            <div style={{paddingLeft:"440px",}}>
+                            <div style={{paddingLeft:"420px",}}>
                                 <input style={buttonStyle} type="image" alt="add button" onClick={() => addGroupTabs(item.title, item.url, item.icon, item.id)} src="icons/add-button-48.png"/>
-                                <input style={buttonStyle} type="button" alt="copy button" onClick={() => copyURL(item.url)}/>
+                                <div style={{marginRight: "28px"}}><input style={buttonStyle} type="image" alt="copy button" onClick={() => copyURL(item.url)} src="icons/copy-button-48.png"/></div>
                             </div>
                             <div style={borderStyle}><img src={item.icon} width="22" height="22" style={iconStyle}></img></div>
                             <div title={item.title} style={urlStyle}>
@@ -433,9 +478,9 @@ function App() {
                 <p style={{marginTop: "-10px",}}>
                     <ListComponentContainer>
                         <div key={item.id} style={textStyle}>
-                            <div style={{paddingLeft:"440px",}}>
+                            <div style={{paddingLeft:"420px",}}>
                                 <input onClick={() => {deleteGroupTabs(item.title, item.url, item.icon, item.id)}} style={buttonStyle} type="image" alt="delete-button" src="icons/delete-button-48.png" />
-                                <input style={buttonStyle} type="button" alt="copy button" onClick={() => copyURL(item.url)}/>
+                                <div style={{marginRight: "28px"}}><input style={buttonStyle} type="image" alt="copy button" onClick={() => copyURL(item.url)} src="icons/copy-button-48.png"/></div>
                             </div>
                             <div style={borderStyle}><img src={item.icon} width="22" height="22" style={iconStyle}></img></div>
                             <div title={item.title} style={urlStyle}>
@@ -479,6 +524,23 @@ function App() {
         }
 
         return content;
+    }
+
+    function Toggle({toggled, onClick}) {
+        return (
+            <div onClick={onClick} className={`toggle${toggled ? " night": ""}`}>
+                <div className="notch">
+                    <div className="crater"/>
+                    <div className="crater"/>
+                </div>
+                <div>
+                    <div className="shape sm"></div>
+                    <div className="shape sm"></div>
+                    <div className="shape md"></div>
+                    <div className="shape lg"></div>
+                </div>
+            </div>
+        );
     }
 
     const handleSubmit = event => {
@@ -534,8 +596,13 @@ function App() {
     return ( 
         <AppContainer>
             
-            <div>
-                <h2>Your Groups:</h2>
+            <h1>TabOrg</h1>
+            <Toggle toggled={toggled} onClick={handleClick} />
+
+            <hr style={{display: "inline-block", width: "100%"}}/>
+
+            <h2>Your Groups:</h2>
+            <div style={alignCenter}>
 
                 <p>
                     {getGroups(currentGroups, currentGroupTitle)}
@@ -543,27 +610,25 @@ function App() {
 
             </div>
 
-
-            <div> 
-                <h2>Your Tabs:</h2>
+            <h2>Your Tabs:</h2>
+            <div style={alignCenter}> 
 
                 <p>
                     {getAllItems(currentTabs, currentNames, currentIcons)}
                 </p>
             </div>
             
-            <div>
-                <h2>Create a Group:</h2>
-
-                <p>
-                    {getGroupItems(currentTabGroup, currentNameGroup, currentIconGroup)}
-                </p>
-
-                <p>
-                    <form onSubmit={handleSubmit}>
+            <h2>Create a Group:</h2>
+            <div style={alignCenter}>
+                <p style={{marginBottom: "10px"}}>
+                    <form onSubmit={handleSubmit} style={{width: "50%",}}>
                         <input type="text" placeholder="Enter Group Name" id="grpName"></input>
                         <button type="submit">Create +</button>
                     </form>
+                </p>
+
+                <p>
+                    {getGroupItems(currentTabGroup, currentNameGroup, currentIconGroup)}
                 </p>
 
             </div>

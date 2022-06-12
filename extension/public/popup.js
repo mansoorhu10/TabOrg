@@ -99,6 +99,7 @@ Storage.prototype.getObj = function(key) {
   return JSON.parse(this.getItem(key));
 }
 
+/*
 //Opening the popup in a new tab using webBtn
 
 var webButton = document.getElementById("webBtn");
@@ -107,6 +108,8 @@ webButton.onclick = function openWeb()
   newIndexURL = chrome.runtime.getURL("index.html")
   chrome.tabs.create({url: newIndexURL});
 }
+
+*/
 
 /*
 //Saving a file in order to permanently store url info on hard drive

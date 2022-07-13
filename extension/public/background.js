@@ -41,6 +41,10 @@ chrome.storage.sync.set({'groupTitles': []}, function() {
   console.log("'groupTitles' is set to '[]'");
 });
 
+chrome.storage.sync.set({'groupColors': []},function() {
+  console.log("'groupColors' is set to '[]'");
+});
+
 /*
 //Creating a function that gets all of the tabs with URL info in the current window and displays it on the page
 var currentURL = "";

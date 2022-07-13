@@ -1,10 +1,12 @@
 /*global chrome*/
 
+// All Import Statements
 import React, { useEffect, useState } from 'react'
+import Select from "react-select"
 import styled from 'styled-components'
 import "./style.css";
 
-// custom styling using styled-components!
+// Custom styling using styled-components!
 const AppContainer = styled.div`
   
 `
@@ -37,8 +39,9 @@ async function fetchFromStorage(key) {
 }
 */
 
+// Checking the mode as either 'light' or 'dark'
 chrome.storage.sync.get(['mode'], function(newMode) {
-    console.log("DA mode is currently " + newMode.mode);
+    console.log("The mode is currently " + newMode.mode);
 });
 
 
@@ -55,8 +58,10 @@ function ListComponent(props) {
 }
 
 
-
+// App function that contains all pieces of data that can change over time due to user input
 function App() {
+
+    // All useState variables that store data that cannot be directly modified, only undiretly through the user's changes
     const [currentTabs, setNewTabs] = useState([]);
     const addTabs = (tab) => {
 
@@ -120,28 +125,36 @@ function App() {
         setDarkMode();
     };
 
+    const [currentGroupColors, setNewGroupColors] = useState([]);
+    const addNewGroupColor= (color) => {
+        console.log(color);
+        setNewGroupColors(currentGroupColors => currentGroupColors.concat(color));
+    }
+
+    // Updating the dark mode 
     function setDarkMode()
     {
-    document.body.classList.toggle("dark");
+        document.body.classList.toggle("dark");
 
-    chrome.storage.sync.get(['mode'], function(tempMode) {
-        console.log("'mode' is currently set to " + tempMode['mode']);
-        if (tempMode['mode'] == "light")
-        {
-        chrome.storage.sync.set({'mode': 'dark'}, function() {
-            console.log("'mode' is updated to 'dark'");
+        chrome.storage.sync.get(['mode'], function(tempMode) {
+            console.log("'mode' is currently set to " + tempMode['mode']);
+            if (tempMode['mode'] == "light")
+            {
+            chrome.storage.sync.set({'mode': 'dark'}, function() {
+                console.log("'mode' is updated to 'dark'");
+            });
+            }
+            else if (tempMode['mode'] == "dark")
+            {
+            chrome.storage.sync.set({'mode': 'light'}, function() {
+                console.log("'mode' is updated to 'light'");
+            });
+            }
         });
-        }
-        else if (tempMode['mode'] == "dark")
-        {
-        chrome.storage.sync.set({'mode': 'light'}, function() {
-            console.log("'mode' is updated to 'light'");
-        });
-        }
-    });
 
     }
 
+    // Adds a tab into the group section by individually updating the correponding useState variables
     const addGroupTabs = (title, url, icon, index) => {
         
         addTabInGroup(url);
@@ -206,6 +219,7 @@ function App() {
 
     }
 
+    // Removing a tab from the group section back to the overview of the user's tabs
     const deleteGroupTabs = (title, url, icon, index) => {
 
         addTabs(url);
@@ -268,6 +282,7 @@ function App() {
 
     }
 
+    // Copying a tab's url
     const copyURL = (text) => {
         navigator.clipboard.writeText(text).then(function() {
             alert("Copied the text: " + text);    
@@ -275,6 +290,7 @@ function App() {
         
     }
 
+    //Fetching data using chrome.storage on render of the popup
     useEffect(() => {
         chrome.storage.sync.get(['currentURL'], function(result) {
             console.log('currentURL from storage is');
@@ -359,8 +375,20 @@ function App() {
             }
         });
 
+        chrome.storage.sync.get(['groupColors'], function(result) {
+            console.log("'groupColors' from storage is ");
+            console.log(result.groupColors);
+
+            for (let i = 0; i < result.groupColors.length; i++)
+            {
+                addNewGroupColor(result['groupColors'][i]);
+                console.log(result.groupColors);
+            }
+        });
+
     } ,[]);
 
+    // Style variables used in react
     const textStyle = {
         height: "60px",
         width: "400x",
@@ -408,6 +436,56 @@ function App() {
 
     }
 
+    const customSelectStyle = {
+        menu: (provided, state) => ({
+            ...provided,
+            width: state.selectProps.width,
+            borderBottom: '1px dotted pink',
+            color: state.selectProps.menuColor,
+            padding: 20,
+
+        }),
+
+        control: (_, { selectProps: { width }}) => ({
+            width: width
+        }),
+
+        singleValue: (provided, state) => {
+            const opacity = state.isDisabled ? 0.5 : 1;
+            const transition = 'opacity 300ms';
+
+            return { ...provided, opacity, transition };
+        }
+    }
+
+    // Rendering the colour drop down
+    const colourDropDown = () => {
+        
+        const options = [
+            {label: "Red", value: "red"},
+            {label: "Blue", value: "blue"},
+            {label: "Green", value: "green"},
+            {label: "Yellow", value: "yellow"},
+            {label: "Purple", value: "purple"},
+            {label: "Pink", value: "pink"}, 
+        ];
+
+        return (
+            
+            <Select defaultValue={options[0]} theme={(theme) => ({
+                ...theme,
+                borderRadius: 0,
+                colors: {
+                    ...theme.colors,
+                    primary25: "#BDFFBD",
+                    primary: "black"
+                }
+            })} onChange={handleChange} width="500px" className="react-select" classNamePrefix="react-select" style={customSelectStyle} options={options} />
+            
+        );
+    }
+
+    // Rendering all of the user's tabs
     const getAllItems = function(currentTabs, currentNames, currentIcons) {
 
         let renderedList = [];
@@ -452,6 +530,7 @@ function App() {
         return content;
     }
 
+    // Rendering the tabs that are being added into the tab group creation section
     const getGroupItems = function(currentTabGroup, currentNameGroup, currentIconGroup) {
 
         let groupList = [];
@@ -495,29 +574,35 @@ function App() {
         return content;
     }
 
-    const getGroups = function(currentGroups, currentGroupTitle) {
+    // Rendering all of hte tab group buttons
+    const getGroups = function(currentGroups, currentGroupTitle, currentGroupColors) {
         let groups = [];
 
         for (let i = 0; i < currentGroupTitle.length; i++)
         {
             let tempUrlArr = currentGroups[i];
             let tempTitle = currentGroupTitle[i];
+            let tempColor = currentGroupColors[i].value;
 
             groups.push({
                 id: i,
                 name: tempTitle,
-                urlArr: tempUrlArr
-            })
+                urlArr: tempUrlArr,
+                color: tempColor
+            });
         }
 
         console.log(groups);
 
         let content = [];
+        let currentColor = "";
         for (let item of groups) {
+            currentColor = getColor(item.color);
+
             content.push(
                 <p>
-                    <div key={item.id}>
-                        <button type="button" onClick={() => {createTabs(item.urlArr)}}>{item.name}</button>
+                    <div key={item.id} class="groupBtns">
+                        <button className={currentColor} type="button" onClick={() => {createTabs(item.urlArr)}}>{item.name}</button>
                     </div>
                 </p>
             );
@@ -526,6 +611,7 @@ function App() {
         return content;
     }
 
+    // Custom css toggle switch
     function Toggle({toggled, onClick}) {
         return (
             <div onClick={onClick} className={`toggle${toggled ? " night": ""}`}>
@@ -543,6 +629,52 @@ function App() {
         );
     }
 
+    // Determining what colour is being represented in storage
+    const getColor = (groupColorIndex) => {
+        
+        let colorClass = "";
+        
+        switch(groupColorIndex)
+        {
+            case "red":
+                console.log("The colour is red");
+                colorClass = "background-red";
+                break;
+
+            case "blue":
+                console.log("The colour is blue");
+                colorClass = "background-blue";
+                break;
+
+            case "yellow":
+                console.log("The colour is yellow");
+                colorClass = "background-yellow";
+                break;
+
+            case "green":
+                console.log("The colour is green");
+                colorClass = "background-green";
+                break;
+
+            case "purple":
+                console.log("The colour is purple");
+                colorClass = "background-purple";
+                break;
+
+            case "pink":
+                console.log("The colour is pink");
+                colorClass = "background-pink";
+                break;
+
+            default:
+                console.log("Colour unidentified");
+                colorClass = "";
+        }
+
+        return colorClass;
+    }
+
+    // Adding a tab group into the memory and the useState variables
     const handleSubmit = event => {
         event.preventDefault();
 
@@ -582,17 +714,32 @@ function App() {
         });
 
         chrome.storage.sync.set({'groupTitles': groupTitlesNow}, function() {
-            console.log("groups has been updated to ");
+            console.log("groupTitles has been updated to ");
             console.log(groupTitlesNow);
         });
 
         console.log('form submitted');
     }
 
+    // Adding the selected colour into memory
+    const handleChange = (selectedOption) => {
+        addNewGroupColor(selectedOption);
+        const newColors = [...currentGroupColors];
+
+        newColors.push(selectedOption);
+        chrome.storage.sync.set({'groupColors': newColors}, function() {
+            console.log("groupColors has been updated to ");
+            console.log(newColors);
+        });
+
+    }
+
+    // Creating a new window with the tabs stored in the tab group
     const createTabs = (urlArr) => {
         chrome.windows.create({'url': urlArr, 'focused': false, 'height': 800, 'width': 1200});
     }
 
+    // Returning what components to display inside the AppContainer while using the functions above to fetch data and update memory
     return ( 
         <AppContainer>
             
@@ -605,7 +752,7 @@ function App() {
             <div style={alignCenter}>
 
                 <p>
-                    {getGroups(currentGroups, currentGroupTitle)}
+                    {getGroups(currentGroups, currentGroupTitle, currentGroupColors)}
                 </p>
 
             </div>
@@ -621,8 +768,9 @@ function App() {
             <h2>Create a Group:</h2>
             <div style={alignCenter}>
                 <p style={{marginBottom: "10px"}}>
-                    <form onSubmit={handleSubmit} style={{width: "50%",}}>
+                    <form onSubmit={handleSubmit} style={{width: "500px",}}>
                         <input type="text" placeholder="Enter Group Name" id="grpName"></input>
+                        {colourDropDown()}
                         <button type="submit">Create +</button>
                     </form>
                 </p>

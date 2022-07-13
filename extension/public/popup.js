@@ -241,6 +241,7 @@ if (localStorage.getItem("mode") == "dark") //created in order to save the user'
 }
 */
 
+/*
 var darkButton = document.getElementById("darkBtn"); 
 darkButton.onclick = function setDarkMode()
 {
@@ -263,4 +264,4 @@ darkButton.onclick = function setDarkMode()
   });
 
 }
-
+*/

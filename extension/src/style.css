@@ -243,3 +243,38 @@ nav.sidenav li a:hover, a:active {
     width: 7px;
     transform: translate(-5px, 0);
 }
+
+.circle {
+    display: flex;
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    background-color: #555;
+}
+
+
+
+.react-select {
+    width: 150px;
+}
+
+.react-select .react-select__control--is-focused.react-select__control--menu-is-open {
+    border-color: #0A3200;
+
+    
+}
+
+.react-select:hover {
+    border-color: #0A3200;
+}
+
+.groupBtns {
+    width: 100px;
+}
+
+.groupBtns .background-red {background-color: rgb(167, 10, 10); color: white; border-radius: 10px; border-width: 1px; width: 100px; height: 70px;}
+.groupBtns .background-blue {background-color: rgb(0, 0, 117); color: white; border-radius: 10px; border-width: 1px; width: 100px; height: 70px;}
+.groupBtns .background-yellow {background-color: rgb(255, 255, 131); color: rgb(27, 27, 27); border-radius: 10px; border-width: 1px; width: 100px; height: 70px;}
+.groupBtns .background-green {background-color: #0A3200; color: white; border-radius: 10px; border-width: 1px; width: 100px; height: 70px;}
+.groupBtns .background-purple {background-color: rgb(57, 0, 104); color: white; border-radius: 10px; border-width: 1px; width: 100px; height: 70px;}
+.groupBtns .background-pink {background-color: rgb(255, 162, 178); color: rgb(27, 27, 27); border-radius: 10px; border-width: 1px; width: 100px; height: 70px;}

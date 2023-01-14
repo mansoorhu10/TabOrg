@@ -14,7 +14,7 @@ body {
 h1 
 {
     font-size: 40px;
-    color: #0A3200;
+    color: #114d02;
     display: inline;
     text-align: center;
     margin-left: 8%;
@@ -25,6 +25,14 @@ h2
 {
     text-align: left;
     color:rgb(27, 27, 27);
+    font-size: 25px;
+}
+
+h3
+{
+    text-align: left;
+    color:rgb(27, 27, 27);
+    font-size: 22px;
 }
 
 #root {
@@ -39,6 +47,11 @@ h2
 
 .dark h2 {
     color: white
+}
+
+.dark h3
+{
+    color: white;
 }
 
 .center 
@@ -102,7 +115,7 @@ nav.sidenav li {
 nav.sidenav li a {
     display: block;
     width: 170px;
-    color: #0A3200;
+    color: #114d02;
     text-align: left;
     padding: 15px;
     text-decoration: none;
@@ -115,7 +128,7 @@ nav.sidenav li a {
 
 
 nav.sidenav li a:hover, a:active {
-    background-color: #0A3200;
+    background-color: #114d02;
     color: white;
 }
 
@@ -259,17 +272,23 @@ nav.sidenav li a:hover, a:active {
 }
 
 .react-select .react-select__control--is-focused.react-select__control--menu-is-open {
-    border-color: #0A3200;
+    border-color: #114d02;
 
     
 }
 
 .react-select:hover {
-    border-color: #0A3200;
+    border-color: #114d02;
 }
 
-.groupBtns {
-    width: 100px;
+.buttonGrid {
+    width: 100%;
+    height: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    place-items: middle;
+    margin-left: 4.5%;
+    
 }
 
 .groupBtns .background-red {background-color: rgb(167, 10, 10); color: white; border-radius: 10px; border-width: 1px; width: 100px; height: 70px;}

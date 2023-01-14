@@ -4,7 +4,6 @@
 import React, { useEffect, useState } from 'react'
 import Select from "react-select"
 import styled from 'styled-components'
-import "./style.css";
 
 // Custom styling using styled-components!
 const AppContainer = styled.div`
@@ -22,22 +21,6 @@ const ListComponentContainer = styled.div`
         border-width: 1.50px;
     }
 `
-
-/*
-async function fetchFromStorage(key) {
-    return new Promise ((resolve, reject) => {
-        chrome.storage.sync.get([key], resolve);
-    })
-        .then(result => {
-            if (key == null) {
-                return result;
-            }
-            else {
-                return result[key];
-            }
-        });
-}
-*/
 
 // Checking the mode as either 'light' or 'dark'
 chrome.storage.sync.get(['mode'], function(newMode) {
@@ -64,54 +47,30 @@ function App() {
     // All useState variables that store data that cannot be directly modified, only undiretly through the user's changes
     const [currentTabs, setNewTabs] = useState([]);
     const addTabs = (tab) => {
-
         console.log(tab);
         setNewTabs(currentTabs => currentTabs.concat(tab));
         
         console.log(currentTabs);
     }
 
-    const [currentNames, setNewNames] = useState([]);
-    const addNames = (theName) => {
-        setNewNames(currentNames => currentNames.concat(theName));
-    }
-    
-    const [currentIcons, setNewIcons] = useState([]);
-    const addIcons = (theIcon) => {
-        setNewIcons(currentIcons => currentIcons.concat(theIcon));
-    }
-
-    const [currentTabGroup, setNewTabInGroup] = useState([]);
+    const [currentTabGroup, setNewTabsInGroupCreation] = useState([]);
     const addTabInGroup = (tab) => {
         console.log(tab);
-        setNewTabInGroup(currentTabGroup => currentTabGroup.concat(tab));
+        setNewTabsInGroupCreation(currentTabGroup => currentTabGroup.concat(tab));
 
         console.log(currentTabGroup);
-    }
-
-    const [currentNameGroup, setNewNameInGroup] = useState([]);
-    const addNameInGroup = (theName) => {
-        console.log(theName);
-        setNewNameInGroup(currentNameGroup => currentNameGroup.concat(theName));
-    }
-
-    const[currentIconGroup, setNewIconInGroup] = useState([]);
-    const addIconInGroup = (theIcon) => {
-        console.log(theIcon);
-        setNewIconInGroup(currentIconGroup => currentIconGroup.concat(theIcon));
     }
 
     const [currentGroups, setNewGroups] = useState([]);
     const addNewGroup = (group) => {
         console.log(group);
         setNewGroups(currentGroups => currentGroups.concat(group));
-    }
 
-    const [currentGroupTitle, setNewGroupTitle] = useState([]);
-    const addNewGroupTitle = (groupName) => {
-        console.log(groupName);
-        setNewGroupTitle(currentGroupTitle => currentGroupTitle.concat(groupName));
+        console.log(currentGroups);
     }
+    
+
+    const [currentColor, setNewColor] = useState({label: "Red", value: "red"});
 
     const [toggled, setToggled] = useState(false);
     const handleClick = () => {
@@ -125,12 +84,6 @@ function App() {
         setDarkMode();
     };
 
-    const [currentGroupColors, setNewGroupColors] = useState([]);
-    const addNewGroupColor= (color) => {
-        console.log(color);
-        setNewGroupColors(currentGroupColors => currentGroupColors.concat(color));
-    }
-
     // Updating the dark mode 
     function setDarkMode()
     {
@@ -138,13 +91,13 @@ function App() {
 
         chrome.storage.sync.get(['mode'], function(tempMode) {
             console.log("'mode' is currently set to " + tempMode['mode']);
-            if (tempMode['mode'] == "light")
+            if (tempMode['mode'] === "light")
             {
             chrome.storage.sync.set({'mode': 'dark'}, function() {
                 console.log("'mode' is updated to 'dark'");
             });
             }
-            else if (tempMode['mode'] == "dark")
+            else if (tempMode['mode'] === "dark")
             {
             chrome.storage.sync.set({'mode': 'light'}, function() {
                 console.log("'mode' is updated to 'light'");
@@ -155,129 +108,52 @@ function App() {
     }
 
     // Adds a tab into the group section by individually updating the correponding useState variables
-    const addGroupTabs = (title, url, icon, index) => {
+    const addGroupTabs = (item) => {
         
-        addTabInGroup(url);
-        addNameInGroup(title);
-        addIconInGroup(icon);
+        addTabInGroup(item);
 
         const newTabs = [...currentTabs];
-        const newNames = [...currentNames];
-        const newIcons = [...currentIcons];
 
-        console.log(index);
-
-        newTabs.splice(index, 1);
-        newNames.splice(index, 1);
-        newIcons.splice(index, 1);
+        newTabs.splice(item.id, 1);
 
         setNewTabs(newTabs);
-        setNewNames(newNames);
-        setNewIcons(newIcons);
-
-        console.log(newTabs);
 
         const tabGroup = [...currentTabGroup];
-        tabGroup.push(url);
+        tabGroup.push(item);
 
-        const nameGroup = [...currentNameGroup];
-        nameGroup.push(title);
-
-        const iconGroup = [...currentIconGroup];
-        iconGroup.push(icon);
-
-
-        chrome.storage.sync.set({'currentURL': newTabs}, function() {
-            console.log("currentURL is set to ");
+        chrome.storage.local.set({'currentTabs': newTabs}, function() {
+            console.log("'currentTabs' is updated to");
             console.log(newTabs);
         });
 
-        chrome.storage.sync.set({'groupURLs': tabGroup}, function() {
-            console.log("groupURL is updated to ");
+        chrome.storage.local.set({'groupCreationTabs': tabGroup}, function() {
+            console.log("'groupCreationTabs' is updated to ");
             console.log(tabGroup);
         });
-
-        chrome.storage.sync.set({'names': newNames}, function() {
-            console.log("names is updated to ");
-            console.log(newNames);
-        });
-
-        chrome.storage.sync.set({'groupNames': nameGroup}, function() {
-            console.log("groupNames is updated to ");
-            console.log(nameGroup);
-        });
-
-        chrome.storage.sync.set({'icons': newIcons}, function() {
-            console.log("icons is updated to ");
-            console.log(newIcons);
-        });
-
-        chrome.storage.sync.set({'groupIcons': iconGroup}, function() {
-            console.log("groupIcons is updated to ");
-            console.log(iconGroup);
-        });
-
     }
 
     // Removing a tab from the group section back to the overview of the user's tabs
-    const deleteGroupTabs = (title, url, icon, index) => {
+    const deleteGroupTabs = (item) => {
 
-        addTabs(url);
-        addNames(title);
-        addIcons(icon);
+        addTabs(item);
 
         const tabGroup = [...currentTabGroup];
-        const nameGroup = [...currentNameGroup];
-        const iconGroup = [...currentIconGroup];
-        
-        console.log(index);
 
-        tabGroup.splice(index, 1);
-        nameGroup.splice(index, 1);
-        iconGroup.splice(index, 1);
+        tabGroup.splice(item.id, 1);
 
-        setNewTabInGroup(tabGroup);
-        setNewNameInGroup(nameGroup);
-        setNewIconInGroup(iconGroup);
+        setNewTabsInGroupCreation(tabGroup);
 
         const newTabs = [...currentTabs];
-        newTabs.push(url);
+        newTabs.push(item);
 
-        const newNames = [...currentNames];
-        newNames.push(title);
-
-        const newIcons = [...currentIcons];
-        newIcons.push(icon);
-
-
-        chrome.storage.sync.set({'currentURL': newTabs}, function() {
-            console.log("currentURL is set to ");
+        chrome.storage.local.set({'currentTabs': newTabs}, function() {
+            console.log("'currentTabs' is updated to ");
             console.log(newTabs);
         });
 
-        chrome.storage.sync.set({'groupURLs': tabGroup}, function() {
-            console.log("groupURL is updated to ");
+        chrome.storage.local.set({'groupCreationTabs': tabGroup}, function() {
+            console.log("'groupCreationTabs' is updated to ");
             console.log(tabGroup);
-        });
-
-        chrome.storage.sync.set({'names': newNames}, function() {
-            console.log("names is updated to ");
-            console.log(newNames);
-        });
-
-        chrome.storage.sync.set({'groupNames': nameGroup}, function() {
-            console.log("groupNames is updated to ");
-            console.log(nameGroup);
-        });
-
-        chrome.storage.sync.set({'icons': newIcons}, function() {
-            console.log("icons is updated to ");
-            console.log(newIcons);
-        });
-
-        chrome.storage.sync.set({'groupIcons': iconGroup}, function() {
-            console.log("groupIcons is updated to ");
-            console.log(iconGroup);
         });
 
     }
@@ -290,100 +166,34 @@ function App() {
         
     }
 
-    //Fetching data using chrome.storage on render of the popup
+    // Fetching data using chrome.storage on render of the popup
     useEffect(() => {
-        chrome.storage.sync.get(['currentURL'], function(result) {
-            console.log('currentURL from storage is');
-            console.log(result['currentURL']);
 
-            setNewTabs(result.currentURL);
-        });
+        chrome.storage.local.get(['currentTabs'], function(result) {
+            console.log("'currentTabs' from storage is: ");
+            console.log(result['currentTabs']);
+            setNewTabs(result.currentTabs);
 
+        })
         
-        chrome.storage.sync.get(['names'], function(result) {
-            console.log("'names' from storage is");
-            console.log(result.names);
+        chrome.storage.local.get(['groupCreationTabs'], function(result) {
+            console.log("'groupCreationTabs' from storage is ");
+            console.log(result.groupCreationTabs);
 
-            setNewNames(result.names);
-        });
-
-        chrome.storage.sync.get(['icons'], function(result) {
-            console.log("'icons' from storage is ");
-            console.log(result.icons);
-
-            setNewIcons(result.icons);
-
-        });
-
-        
-        chrome.storage.sync.get(['groupURLs'], function(result) {
-            console.log("'groupURLs' from storage is ");
-            console.log(result.groupURLs);
-
-            for (let i = 0; i < result.groupURLs.length; i++)
+            for (let i = 0; i < result.groupCreationTabs.length; i++)
             {
-                addTabInGroup(result['groupURLs'][i]);
-                console.log(currentTabGroup);
+                addTabInGroup(result['groupCreationTabs'][i]);
             }
 
-        });
-
-        chrome.storage.sync.get(['groupNames'], function(result) {
-            console.log("'groupNames' from storage is ");
-            console.log(result.groupNames);
-
-            for (let i = 0; i < result.groupNames.length; i++)
-            {
-                addNameInGroup(result['groupNames'][i]);
-                console.log(currentNameGroup);
-            }
+            console.log(currentTabGroup);
 
         });
 
-        chrome.storage.sync.get(['groupIcons'], function(result) {
-            console.log("'groupIcons' from storage is ");
-            console.log(result.groupIcons);
-
-            for (let i = 0; i < result.groupIcons.length; i++)
-            {
-                addIconInGroup(result['groupIcons'][i]);
-                console.log(currentIconGroup);
-            }
-
-        });
-
-        chrome.storage.sync.get(['groups'], function(result) {
+        chrome.storage.local.get(['groups'], function(result) {
             console.log("'groups' from storage is ");
-            console.log(result.groups);
+            console.log(result['groups']);
+            setNewGroups(result.groups);
 
-            for (let i = 0; i < result.groups.length; i++)
-            {
-                addNewGroup(result['groups'][i]);
-                console.log(currentGroups);
-            }
-
-        });
-
-        chrome.storage.sync.get(['groupTitles'], function(result) {
-            console.log("'groupTitles' from storage is ");
-            console.log(result.groupTitles);
-
-            for (let i = 0; i < result.groupTitles.length; i++)
-            {
-                addNewGroupTitle(result['groupTitles'][i]);
-                console.log(currentGroupTitle);
-            }
-        });
-
-        chrome.storage.sync.get(['groupColors'], function(result) {
-            console.log("'groupColors' from storage is ");
-            console.log(result.groupColors);
-
-            for (let i = 0; i < result.groupColors.length; i++)
-            {
-                addNewGroupColor(result['groupColors'][i]);
-                console.log(result.groupColors);
-            }
         });
 
     } ,[]);
@@ -486,37 +296,30 @@ function App() {
     }
 
     // Rendering all of the user's tabs
-    const getAllItems = function(currentTabs, currentNames, currentIcons) {
+    const getTabItems = function(currentTabs) {
+        
+        let tabList = [];
 
-        let renderedList = [];
-
-        for (let i = 0; i < currentTabs.length; i++)
-        {
-            let tempURL = currentTabs[i];
-            let tempName = currentNames[i];
-            let tempIcon = currentIcons[i];
-
-            renderedList.push({
+        for(let i = 0; i < currentTabs.length; i++){
+            tabList.push({
                 id: i,
-                title: tempName,
-                url: tempURL,
-                icon: tempIcon
-            });    
+                title: (currentTabs[i]).title,
+                url: (currentTabs[i]).url,
+                icon: (currentTabs[i]).icon,
+            })
         }
 
-        console.log(renderedList);
-        
         let content = [];
-        for (let item of renderedList) {
+        for (let item of tabList) {
             content.push(
                 <p style={{marginTop: "-10px"}}>
                     <ListComponentContainer>
                         <div key={item.id} style={textStyle}>
                             <div style={{paddingLeft:"420px",}}>
-                                <input style={buttonStyle} type="image" alt="add button" onClick={() => addGroupTabs(item.title, item.url, item.icon, item.id)} src="icons/add-button-48.png"/>
+                                <input style={buttonStyle} type="image" alt="add button" onClick={() => addGroupTabs(item)} src="icons/add-button-48.png"/>
                                 <div style={{marginRight: "28px"}}><input style={buttonStyle} type="image" alt="copy button" onClick={() => copyURL(item.url)} src="icons/copy-button-48.png"/></div>
                             </div>
-                            <div style={borderStyle}><img src={item.icon} width="22" height="22" style={iconStyle}></img></div>
+                            <div style={borderStyle}><img alt="icon" src={item.icon} width="22" height="22" style={iconStyle}></img></div>
                             <div title={item.title} style={urlStyle}>
                                 {item.title}
                             </div>
@@ -531,25 +334,18 @@ function App() {
     }
 
     // Rendering the tabs that are being added into the tab group creation section
-    const getGroupItems = function(currentTabGroup, currentNameGroup, currentIconGroup) {
+    const getGroupItems = function(currentTabGroup) {
 
         let groupList = [];
 
-        for (let i = 0; i < currentTabGroup.length; i++)
-        {
-            let tempURL = currentTabGroup[i];
-            let tempName = currentNameGroup[i];
-            let tempIcon = currentIconGroup[i];
-
+        for(let i = 0; i < currentTabGroup.length; i++){
             groupList.push({
                 id: i,
-                title: tempName,
-                url: tempURL,
-                icon: tempIcon
-            });
+                title: (currentTabGroup[i]).title,
+                url: (currentTabGroup[i]).url,
+                icon: (currentTabGroup[i]).icon,
+            })
         }
-
-        console.log(groupList);
 
         let content = [];
         for (let item of groupList) {
@@ -558,10 +354,10 @@ function App() {
                     <ListComponentContainer>
                         <div key={item.id} style={textStyle}>
                             <div style={{paddingLeft:"420px",}}>
-                                <input onClick={() => {deleteGroupTabs(item.title, item.url, item.icon, item.id)}} style={buttonStyle} type="image" alt="delete-button" src="icons/delete-button-48.png" />
+                                <input onClick={() => {deleteGroupTabs(item)}} style={buttonStyle} type="image" alt="delete-button" src="icons/delete-button-48.png" />
                                 <div style={{marginRight: "28px"}}><input style={buttonStyle} type="image" alt="copy button" onClick={() => copyURL(item.url)} src="icons/copy-button-48.png"/></div>
                             </div>
-                            <div style={borderStyle}><img src={item.icon} width="22" height="22" style={iconStyle}></img></div>
+                            <div style={borderStyle}><img alt="icon" src={item.icon} width="22" height="22" style={iconStyle}></img></div>
                             <div title={item.title} style={urlStyle}>
                                 {item.title}
                             </div>
@@ -575,34 +371,30 @@ function App() {
     }
 
     // Rendering all of hte tab group buttons
-    const getGroups = function(currentGroups, currentGroupTitle, currentGroupColors) {
+    const getGroups = function(currentGroups) {
         let groups = [];
 
-        for (let i = 0; i < currentGroupTitle.length; i++)
+        for (let i = 0; i < currentGroups.length; i++)
         {
-            let tempUrlArr = currentGroups[i];
-            let tempTitle = currentGroupTitle[i];
-            let tempColor = currentGroupColors[i].value;
+            let tempUrlArr = currentGroups[i].urlArr;
+            let tempTitle = currentGroups[i].title;
+            let tempColor = currentGroups[i].color;
 
             groups.push({
                 id: i,
-                name: tempTitle,
+                title: tempTitle,
                 urlArr: tempUrlArr,
-                color: tempColor
+                color: tempColor,
             });
         }
 
-        console.log(groups);
-
         let content = [];
-        let currentColor = "";
         for (let item of groups) {
-            currentColor = getColor(item.color);
 
             content.push(
                 <p>
                     <div key={item.id} class="groupBtns">
-                        <button className={currentColor} type="button" onClick={() => {createTabs(item.urlArr)}}>{item.name}</button>
+                        <button className={getColor(item.color)} type="button" onClick={() => {createTabs(item.urlArr)}}>{item.title}</button>
                     </div>
                 </p>
             );
@@ -678,44 +470,44 @@ function App() {
     const handleSubmit = event => {
         event.preventDefault();
 
-        console.log(document.querySelector('#grpName').value);
+        const groupURLs = [];
+        
+        for(let i = 0; i < currentTabGroup.length; i++){
+            groupURLs.push(currentTabGroup[i].url);
+        }
 
-        const groupURLs = [currentTabGroup];
         const groupTitle = document.querySelector('#grpName').value;
+
+        const groupArr = [...currentGroups];
+
+        let groupId = groupArr.length;
+
+        const newGroup = {
+            id: groupId,
+            title: groupTitle,
+            urlArr: groupURLs,
+            color: currentColor.value,
+        }
 
         document.querySelector('#grpName').value = "";
 
-        addNewGroup(groupURLs);
-        addNewGroupTitle(groupTitle);
+        console.log("new group is");
+        console.log(newGroup);
 
-        setNewTabInGroup([]);
-        setNewNameInGroup([]);
-        setNewIconInGroup([]);
+        setNewTabsInGroupCreation([]);
 
-        chrome.storage.sync.set({'groupURLs': []}, function() {
-            console.log("'groupURLS' is updated to '[]'");
-        });
-        chrome.storage.sync.set({'groupNames': []}, function() {
-            console.log("'groupNames' is updated to '[]'");
-        });
-        chrome.storage.sync.set({'groupIcons': []}, function() {
-            console.log("groupIcons is updated to '[]'");
-        });
-        
-        const groupsNow = [...currentGroups];
-        const groupTitlesNow = [...currentGroupTitle]
+        addNewGroup(newGroup);
 
-        groupsNow.push(groupURLs);
-        groupTitlesNow.push(groupTitle);
+        groupArr.push(newGroup);
 
-        chrome.storage.sync.set({'groups': groupsNow}, function() {
-            console.log("groups has been updated to ");
-            console.log(groupsNow);
+        chrome.storage.local.set({'groups': groupArr}, function() {
+            console.log("'groups' has been updated to ");
+            console.log(groupArr);
         });
 
-        chrome.storage.sync.set({'groupTitles': groupTitlesNow}, function() {
-            console.log("groupTitles has been updated to ");
-            console.log(groupTitlesNow);
+        chrome.storage.local.set({'groupCreationTabs': []}, function() {
+            console.log("'groupCreationTabs' has been updated to ");
+            console.log([]);
         });
 
         console.log('form submitted');
@@ -723,15 +515,9 @@ function App() {
 
     // Adding the selected colour into memory
     const handleChange = (selectedOption) => {
-        addNewGroupColor(selectedOption);
-        const newColors = [...currentGroupColors];
-
-        newColors.push(selectedOption);
-        chrome.storage.sync.set({'groupColors': newColors}, function() {
-            console.log("groupColors has been updated to ");
-            console.log(newColors);
-        });
-
+        setNewColor(selectedOption);
+        console.log("Current colour is ");
+        console.log(selectedOption);
     }
 
     // Creating a new window with the tabs stored in the tab group
@@ -751,21 +537,23 @@ function App() {
             <h2>Your Groups:</h2>
             <div style={alignCenter}>
 
-                <p>
-                    {getGroups(currentGroups, currentGroupTitle, currentGroupColors)}
+                <p className="buttonGrid">
+                    {getGroups(currentGroups)}
                 </p>
 
             </div>
 
-            <h2>Your Tabs:</h2>
+            <h2>Create a Group:</h2>
+
+            <h3>Your Tabs:</h3>
             <div style={alignCenter}> 
 
                 <p>
-                    {getAllItems(currentTabs, currentNames, currentIcons)}
+                    {getTabItems(currentTabs)}
                 </p>
             </div>
             
-            <h2>Create a Group:</h2>
+            <h3>Current Tab Group:</h3>
             <div style={alignCenter}>
                 <p style={{marginBottom: "10px"}}>
                     <form onSubmit={handleSubmit} style={{width: "500px",}}>
@@ -776,7 +564,7 @@ function App() {
                 </p>
 
                 <p>
-                    {getGroupItems(currentTabGroup, currentNameGroup, currentIconGroup)}
+                    {getGroupItems(currentTabGroup)}
                 </p>
 
             </div>

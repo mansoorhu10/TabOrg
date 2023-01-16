@@ -19,4 +19,5 @@ I had to reduce the scope of the original vision I had for the extension once I 
   * Adding more functionality such as being able to edit and delete Tab Groups, as well as reorder them in the "Create a Tab Group" section.
   * Re-adding functionality like the "Delete Duplicates" button.
   * Swapping the icons to use the material-ui library for further customization with colours.
+  * Cleaning up styled components and instead using the ```"className"``` property along with ```[style.css](./extension/src/style.css)``` to organize styling
   

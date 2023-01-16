@@ -15,7 +15,7 @@ I had to reduce the scope of the original vision I had for the extension once I 
 
   * Figuring out a way to put the "Create a Tab Group" section of the extension to an external settings page that can be opened in a new tab through a button (I already initially tried to do this, but I couldn't figure out how to do it at the time).
   * Giving the extension more personality through the use of colours and improving the design of the Tab Group Buttons.
-  * Improving the organization and readability of the code, particularily creating components in a folder called "components" for functions in this [file](./src/app.js).
+  * Improving the organization and readability of the code, particularily creating components in a folder called "components" for functions in this [file](./extension/src/app.js).
   * Adding more functionality such as being able to edit and delete Tab Groups, as well as reorder them in the "Create a Tab Group" section.
   * Re-adding functionality like the "Delete Duplicates" button.
   * Swapping the icons to use the material-ui library for further customization with colours.

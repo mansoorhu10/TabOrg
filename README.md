@@ -4,7 +4,7 @@ A Tab Organizer Chrome Extension. Designed to help save google chrome tabs into 
 ## How I worked on this project
 My goal was to create a chrome extension with simple functionality that provides a great user exprience.
   * I worked with tasks on a Trello board to keep myself on track.
-  * I built the extension from scratch using React, JavScript, HTML and CSS.
+  * I built the extension from scratch using React, JavaScript, HTML and CSS.
   * I also learned how to use Chrome's tabs and storage API to save and load data and add functionality. The API references can be found here: [Tabs API](https://developer.chrome.com/docs/extensions/reference/tabs/), [Storage API](https://developer.chrome.com/docs/extensions/reference/storage/).
   
 ## Why I built the project this way
